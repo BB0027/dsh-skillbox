@@ -35,9 +35,9 @@ dsh plugin --profile <profile> add dsh-skillbox
 
 重启 DSH（host 半边会在启动时注册一条数据路由），然后打开 **设置 → 技能**。卸载插件用 `dsh plugin --profile <profile> remove dsh-skillbox`；已卸载的技能仍在隔离区，卸载插件前后都能恢复。
 
-## 从 GitHub 仓库安装
+### 从本仓库安装
 
-npm 发布暂时搁置：维护者所在网络无法访问 npm registry 网站，因此还没有拿到 token。在此之前请直接从本仓库安装 —— 这也正是本插件的开发验证方式：
+同一份包，直接从源码安装 —— 这也正是本插件的开发验证方式：
 
 ```bash
 git clone https://github.com/BB0027/dsh-skillbox.git

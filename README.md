@@ -35,9 +35,9 @@ dsh plugin --profile <profile> add dsh-skillbox
 
 Restart DSH (the Host half registers one exact data route at boot), then open **Settings → Skills**. Uninstall the plugin with `dsh plugin --profile <profile> remove dsh-skillbox`; skills you already uninstalled stay in quarantine and can be restored before or after removal.
 
-## Install from the GitHub repository
+### From this repository
 
-npm publication is pending: the npm registry website is unreachable from the maintainer's network, so no token could be created yet. Until that is resolved, install straight from this repository — the same form this plugin is developed and verified with:
+The same package straight from source — the form this plugin is developed and verified with:
 
 ```bash
 git clone https://github.com/BB0027/dsh-skillbox.git
