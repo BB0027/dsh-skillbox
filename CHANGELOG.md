@@ -62,3 +62,13 @@ Direction change: skill management is now **uninstall**, not a read-boundary dis
 ### Notes
 
 - No functional change. This release exists to correct published metadata.
+
+## [0.2.2] — 2026-10-04
+
+### Changed
+
+- Releases now go through GitHub Actions with npm Trusted Publishing (OIDC): no npm token exists anywhere, so there is nothing to rotate or expire. A `v*` tag triggers the workflow, which verifies the tag against `package.json` and refuses to run when any token is configured.
+
+### Notes
+
+- No functional change to the plugin: this release exercises the new release pipeline end to end.

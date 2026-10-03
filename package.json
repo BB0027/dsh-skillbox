@@ -1,6 +1,6 @@
 {
   "name": "dsh-skillbox",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Skill shelf for DeepSeek Harness (dsh): list every skill DSH resolves and uninstall or restore any of them from Settings — a reversible move into quarantine that never deletes a file. · DSH 技能控制台：在设置里总览 DSH 解析到的全部技能，可卸载/恢复；卸载是移入隔离区，绝不删除文件。",
   "type": "module",
   "license": "MIT",
