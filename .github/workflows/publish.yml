@@ -1,0 +1,72 @@
+# Publish dsh-skillbox to npm with Trusted Publishing (OIDC) — no NPM_TOKEN, nothing to expire.
+#
+# One-time setup, on the npm website (once):
+#   Package → Settings → Trusted Publisher → GitHub Actions
+#     Organization or user : BB0027
+#     Repository           : dsh-skillbox
+#     Workflow filename    : publish.yml
+#     Environment          : (leave empty)
+# After that, pushing a `v*` tag publishes automatically and attaches provenance.
+# See docs/PUBLISHING.md.
+#
+# Before that registration exists the job fails safely: npm rejects the OIDC token
+# exchange, so nothing is published. Re-runs are harmless.
+#
+# Note: no `registry-url` on setup-node and no NODE_AUTH_TOKEN anywhere on purpose —
+# publishing must go through OIDC, and `publishConfig.registry` already pins the
+# registry in package.json.
+
+name: publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required: lets this job request the OIDC token npm verifies
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Report tool versions and registry
+        run: |
+          node --version
+          npm --version
+          npm config get registry
+
+      - name: Verify the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          echo "tag=$tag package.json=$pkg"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::tag v$tag does not match package.json version $pkg"
+            exit 1
+          fi
+
+      - name: Refuse to publish when a token is configured
+        run: |
+          if [ -n "${NODE_AUTH_TOKEN:-}" ] || [ -n "${NPM_TOKEN:-}" ]; then
+            echo "::error::a token is configured; remove it so publishing uses Trusted Publishing (OIDC)"
+            exit 1
+          fi
+          echo "no token configured — publishing will use OIDC"
+
+      - name: Publish
+        run: npm publish --access public
