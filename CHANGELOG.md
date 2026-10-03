@@ -181,3 +181,10 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 ### Fixed
 
 - The header button no longer renders one character per line. Controls come from the shared `Button`, which does not carry this page's own `dsc-btn { white-space: nowrap }` rule, and the flex row was free to squeeze it; the toolbar (and its children) now refuse to shrink. Same guard added to the tab pill row.
+
+## [0.5.3] — 2026-10-04
+
+### Fixed
+
+- **The category row is a single choice again.** It used to be two stacked filters (source + "edited locally"), so choosing "edited locally" and then clicking a source — or "all sources" — left the edited-locally filter on and the list looked empty with nothing on screen explaining why. Picking any category now clears the others, and a filtered-empty list says so and offers **Clear filters** instead of the plain "no skills match" line (an empty root still reports an empty root).
+- **No more horizontal scrollbar.** The page scrolls vertically only; its children may not widen the column, and key/value rows wrap long paths (`overflow-wrap: anywhere`).

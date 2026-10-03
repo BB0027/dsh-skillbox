@@ -20,13 +20,14 @@ const check = (label, ok, detail = '') => {
 
 const element = (type, props, ...children) => ({ type, props: props ?? {}, children: children.flat(Infinity).filter((c) => c !== null && c !== undefined && c !== false) });
 
-function makeReact({ tab, catalog, discover }) {
+function makeReact({ tab, catalog, discover, query }) {
   return {
     createElement: element,
     Fragment: 'Fragment',
     useReducer: (reducer, initial) => [initial, () => {}],
     useState: (initial) => {
       if (initial === 'installed') return [tab, () => {}];
+      if (initial === '' && query !== undefined) return [query, () => {}];
       if (initial && typeof initial === 'object' && initial.status === 'loading' && catalog !== null) return [{ status: 'ready', data: catalog, error: null }, () => {}];
       if (initial && typeof initial === 'object' && initial.status === 'idle' && discover !== null) return [discover, () => {}];
       return [initial, () => {}];
@@ -56,8 +57,8 @@ function makeUi() {
   };
 }
 
-function renderWith({ tab = 'installed', catalog, discover = { status: 'idle', results: [], error: null }, ui = null }) {
-  const React = makeReact({ tab, catalog, discover });
+function renderWith({ tab = 'installed', catalog, discover = { status: 'idle', results: [], error: null }, ui = null, query }) {
+  const React = makeReact({ tab, catalog, discover, query });
   const mod = captured.factory((name) => {
     if (name === 'react') return React;
     if (name === '@deepseek-ai/dsh-client-ui-primitives') {
@@ -193,7 +194,30 @@ console.log('\n== the basic settings page ==');
   );
 }
 
-// ---------------------------------------------------------------- fallback path
+// ---------------------------------------------------------------- filters + empty state
+console.log('\n== filtering ==');
+{
+  const ui = makeUi();
+  const emptyRoot = { ...catalog, skills: [] };
+  const plain = labelOf(renderWith({ tab: 'installed', catalog: emptyRoot, ui }).component({}));
+  check('an empty root says the root is empty', plain.includes('技能根里没有技能'), plain.slice(0, 90));
+  const filtered = renderWith({ tab: 'installed', catalog, ui, query: 'zzz-no-such-skill' });
+  const tree = filtered.component({});
+  const text = labelOf(tree);
+  check('a filter that matches nothing says so', text.includes('当前筛选下没有技能'), text.slice(0, 120));
+  check(
+    'and offers to clear the filters',
+    nodes(tree, (n) => n.type === ui.Button || n.type === 'button')
+      .map(labelOf)
+      .includes('清除筛选'),
+  );
+  // The category row is single-choice: exactly one of its pills may look selected.
+  const tabLabels = ['已安装', '发现', '隔离区', '体检'];
+  const categoryActive = nodes(tree, (n) => n.type === ui.Pill && n.props.active === true)
+    .map(labelOf)
+    .filter((label) => !tabLabels.includes(label));
+  check('exactly one category pill is active', categoryActive.length === 1, JSON.stringify(categoryActive));
+}
 console.log('\n== without the shared controls (fallback markup) ==');
 {
   const { component, bySlot } = renderWith({ tab: 'installed', catalog });
