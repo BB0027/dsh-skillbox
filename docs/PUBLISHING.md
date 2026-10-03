@@ -67,3 +67,24 @@ Without it the push is rejected with:
 
 Only that file is blocked — commits that touch anything else still go through.
 Granting the permission does not change the token string.
+
+## Troubleshooting: `ENEEDAUTH` from a trusted-publishing run
+
+A missing or mismatched trusted-publisher registration does **not** say so directly. npm
+attempts the OIDC exchange and the registry answers 404, which npm reports as an auth
+problem. In npm's own debug log (`~/.npm/_logs/*-debug-0.log`) it looks like this:
+
+```
+http fetch POST 404 https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/<pkg>
+verbose oidc Failed token exchange request with body message: OIDC token exchange error - package not found
+error code ENEEDAUTH
+```
+
+"package not found" here means *no publisher configuration matched this workflow*, not
+that the package is missing. Check, in order: the registering account owns the package;
+the organization/user and repository strings match exactly; the workflow filename is the
+filename only (`publish.yml`, no path); the Environment name is empty unless the workflow
+declares the same `environment:`; and **Allow npm publish** is checked.
+
+The workflow prints these lines itself: its last step dumps the matching debug-log lines
+when publishing fails.
