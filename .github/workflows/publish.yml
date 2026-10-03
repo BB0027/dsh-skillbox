@@ -75,6 +75,7 @@ jobs:
           if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then echo "OIDC_REQUEST_URL=present"; else echo "OIDC_REQUEST_URL=ABSENT"; fi
           if [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then echo "OIDC_REQUEST_TOKEN=present"; else echo "OIDC_REQUEST_TOKEN=ABSENT"; fi
           echo "--- auth-related npm config ---"
-          npm config list | grep -i -E 'authToken|registry|_auth' || true
+          npm config list | grep -i -E 'authToken|registry|_auth|provenance' || true
+          echo "provenance="
       - name: Publish
-        run: npm publish --access public
+        run: npm publish --access public --provenance
