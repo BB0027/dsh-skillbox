@@ -166,6 +166,12 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 
 - **Chinese first.** An unknown or absent DSH locale now falls back to Chinese rather than English, matching how this console is deployed; the language setting still allows an explicit override.
 
+## [0.5.1] — 2026-10-04
+
+### Changed
+
+- Documentation only. README(.zh) gained a **Settings** section (language, ledger import/export, Node.js check), and SPEC.md now records the basic settings page and the sidebar placement (`order: 5`, between the Plugins and Automation panels) together with their acceptance criteria. No behaviour change.
+
 
 
 

@@ -35,6 +35,14 @@ Both the scan and the automation are limited to the global roots: project-level 
 
 The page itself is built from DSH's shared client controls (`@deepseek-ai/dsh-client-ui-primitives`) — the same primitives the plugin manager page uses — and degrades to plain elements if a client cannot see that module.
 
+## Settings
+
+Settings → Skills is deliberately small; everything that manages skills lives in the sidebar panel. It carries three things:
+
+- **Language** — follow DSH / 中文 / English, stored in the plugin state and applied to every page of the plugin. When DSH reports no locale the pages fall back to Chinese.
+- **Ledger import / export** — export the install baselines, the quarantine ledger, the switches and the preferences as JSON, or paste one back to replace the ledger. Records only: an import moves, edits and deletes nothing.
+- **Node.js check** — the runtime the plugin runs in, the `node` found on PATH, the `skills` CLI version and whether the local `dsh` agent patch is still in place, plus a re-check button.
+
 ## Requirements
 
 The console drives the official **`skills` CLI** (npm package `skills`, the package manager of the skills.sh ecosystem) for anything that writes:
