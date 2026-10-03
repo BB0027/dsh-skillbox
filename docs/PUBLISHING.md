@@ -53,3 +53,17 @@ You can also trigger it by hand from **Actions → publish → Run workflow**; a
 - A local `npm publish` from your machine still requires a token — that path intentionally stops working once tokens are gone. Use the workflow instead.
 - If the repository or the workflow file is **renamed**, update the trusted publisher registration to match, or npm will reject the exchange. The registration itself never expires.
 - Publishing from this workflow goes straight to `registry.npmjs.org`; the Chinese mirror (`registry.npmmirror.com`) syncs it shortly after.
+
+## Maintainer note: pushing changes to `.github/workflows/`
+
+A credential that pushes workflow files needs GitHub's **`workflow`** scope (classic
+token) or the **Workflows: Read and write** repository permission (fine-grained token).
+Without it the push is rejected with:
+
+```
+! [remote rejected] main -> main (refusing to allow a Personal Access Token to
+  create or update workflow `.github/workflows/publish.yml` without `workflow` scope)
+```
+
+Only that file is blocked — commits that touch anything else still go through.
+Granting the permission does not change the token string.
