@@ -52,6 +52,7 @@ function makeUi() {
     Switch: stub('Switch'),
     Input: stub('Input'),
     StateDot: stub('StateDot'),
+    IconSkillOutlineRegular: stub('IconSkill'),
   };
 }
 
@@ -65,13 +66,19 @@ function renderWith({ tab = 'installed', catalog, discover = { status: 'idle', r
     }
     throw new Error(`unexpected require(${name})`);
   });
-  let registered = null;
+  const registrations = [];
   const ctx = {
     get: (name) => (name === 'locale' ? { getSnapshot: () => ({ id: 'zh-CN' }), register: () => {}, subscribe: () => () => {} } : undefined),
-    slots: { inject: (_slot, cb) => cb(), register: (options, component) => { registered = { options, component }; } },
+    slots: {
+      inject: (_slot, cb) => cb(),
+      register: (options, component) => {
+        registrations.push({ options, component });
+      },
+    },
   };
   mod.apply(ctx);
-  return { component: registered?.component, options: registered?.options };
+  const bySlot = (name) => registrations.find((entry) => entry.options?.name === name) ?? null;
+  return { registrations, bySlot, component: registrations[0]?.component, options: registrations[0]?.options };
 }
 
 function texts(node, out = []) {
@@ -130,11 +137,37 @@ const searchResults = [
   { id: 'vercel-labs/agent-skills/vercel-react-native-skills', source: 'vercel-labs/agent-skills', skillId: 'vercel-react-native-skills', name: 'vercel-react-native-skills', installs: 230494 },
 ];
 
+// ---------------------------------------------------------------- navigation placement
+console.log('== where the console lives ==');
+{
+  const ui = makeUi();
+  const { bySlot, component } = renderWith({ tab: 'installed', catalog, ui });
+  const panel = bySlot('main');
+  const entry = bySlot('sidebar.panellist');
+  const settings = bySlot('settings.section');
+  check('page is registered in the sidebar panel slot', panel?.options?.key === 'skill-console' && typeof panel?.component === 'function', JSON.stringify(panel?.options));
+  check(
+    'sidebar entry matches the plugins/automation panels',
+    entry?.options?.id === 'skill-console' && entry?.options?.order === 20 && typeof entry?.component === 'function',
+    JSON.stringify(entry?.options),
+  );
+  check('sidebar label follows the locale', entry?.options?.label?.() === '技能', String(entry?.options?.label?.()));
+  check('settings entry kept as a second way in', settings?.options?.id === 'skill-console');
+  const icon = entry.component();
+  check('the sidebar icon comes from the shared icon set', icon?.type === ui.IconSkillOutlineRegular, String(icon?.type));
+  const fallbackIcon = (() => {
+    const bare = renderWith({ tab: 'installed', catalog, ui: null });
+    return bare.bySlot('sidebar.panellist').component();
+  })();
+  check('the sidebar icon degrades to a plain element', fallbackIcon?.type === 'span' && String(fallbackIcon?.props?.className).includes('dsc-panel-icon'));
+  check('the registered page component is the console', typeof component === 'function');
+}
+
 // ---------------------------------------------------------------- fallback path
 console.log('\n== without the shared controls (fallback markup) ==');
 {
-  const { component, options } = renderWith({ tab: 'installed', catalog });
-  check('slot is settings.section', options?.name === 'settings.section' && options?.id === 'skill-console');
+  const { component, bySlot } = renderWith({ tab: 'installed', catalog });
+  check('settings entry is registered too', bySlot('settings.section')?.options?.id === 'skill-console');
   const tree = component({});
   const text = labelOf(tree);
   check('installed tab renders both skills', text.includes('find-skills') && text.includes('vercel-react-best-practices'));

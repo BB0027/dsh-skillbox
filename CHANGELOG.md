@@ -133,5 +133,16 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 - Applying this version needs one restart of the Host process; the Client half only needs a page refresh.
 - Still true, unchanged: no file is ever deleted, and no `SKILL.md` is ever edited.
 
+## [0.4.1] — 2026-10-04
+
+### Changed
+
+- **The console now lives where Plugins and Automation live.** It registers a page in the `main` panel slot plus an entry in `sidebar.panellist` with `order: 20` — right below the Plugins panel (`0`) and the Automation panel (`10`) — and uses the shared `IconSkillOutlineRegular` glyph as its sidebar icon. It is a sidebar panel in the same navigation layer as those two, not only a Settings page. The Settings entry is kept as a second way in.
+- `npm test` now also runs `test/host-health.mjs`, which had been written but never wired into the script.
+
+### Notes
+
+- Client-half only: refresh the page. No Host restart is needed for this release.
+
 
 

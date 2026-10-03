@@ -6,7 +6,7 @@ A **skill console for DeepSeek Harness (dsh)**: see every skill DSH resolves, **
 
 ## What it does
 
-Four tabs inside one top-level **Settings → Skills** page (`settings.section`):
+Four tabs, registered as a **sidebar panel next to Plugins and Automation** (`main` panel slot + `sidebar.panellist` entry, order 20) and still reachable from **Settings → Skills**:
 
 | Tab | What it gives you |
 |---|---|
@@ -83,7 +83,7 @@ It sits next to the profile's own `cordis.patch.yml` — resolved from the runni
 dsh plugin --profile <profile> add dsh-skillbox
 ```
 
-Restart DSH (the Host half registers one exact data route at boot), then open **Settings → Skills**. Uninstall the plugin with `dsh plugin --profile <profile> remove dsh-skillbox`; skills you already uninstalled stay in quarantine and can be restored before or after removal.
+Restart DSH (the Host half registers one exact data route at boot), then open the **Skills** entry in the sidebar — the panel next to Plugins and Automation — or reach the same page from **Settings → Skills**. Uninstall the plugin with `dsh plugin --profile <profile> remove dsh-skillbox`; skills you already uninstalled stay in quarantine and can be restored before or after removal.
 
 ### From this repository
 

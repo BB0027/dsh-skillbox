@@ -6,7 +6,7 @@
 
 ## 它能做什么
 
-「设置 → 技能」一个顶级页面（`settings.section`）里四个 Tab：
+四个 Tab，注册为**与「插件 / 自动化任务」同级的侧栏面板**（`main` 面板槽 + `sidebar.panellist` 入口，order 20），同时仍能从**设置 → 技能**进入：
 
 | Tab | 内容 |
 |---|---|
@@ -83,7 +83,7 @@ pwsh -NoProfile -File "<dsh-home>\skills\find-skills\scripts\patch-skills-cli-ds
 dsh plugin --profile <profile> add dsh-skillbox
 ```
 
-重启 DSH（host 半边会在启动时注册一条数据路由），然后打开 **设置 → 技能**。卸载插件用 `dsh plugin --profile <profile> remove dsh-skillbox`；已卸载的技能仍在隔离区，卸载插件前后都能恢复。
+重启 DSH（host 半边会在启动时注册一条数据路由），然后点侧栏的「技能」—— 就是「插件 / 自动化任务」旁边那个面板；同一页面也能从 **设置 → 技能** 进入。卸载插件用 `dsh plugin --profile <profile> remove dsh-skillbox`；已卸载的技能仍在隔离区，卸载插件前后都能恢复。
 
 ### 从本仓库安装
 
