@@ -52,3 +52,13 @@ Direction change: skill management is now **uninstall**, not a read-boundary dis
 
 - Applying this version to a running DSH requires one restart of the Host process.
 - Anything already admitted into a conversation stays in that conversation: uninstalling prevents future loads, it does not retract history.
+
+## [0.2.1] — 2026-10-04
+
+### Fixed
+
+- The published package description still described v0.1.0's enable/disable policy. It now describes the uninstall/restore behaviour that actually ships, so the npm page matches the README.
+
+### Notes
+
+- No functional change. This release exists to correct published metadata.
