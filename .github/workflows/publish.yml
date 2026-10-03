@@ -1,20 +1,7 @@
 # Publish dsh-skillbox to npm with Trusted Publishing (OIDC) — no NPM_TOKEN, nothing to expire.
-#
-# One-time setup, on the npm website (once):
-#   Package → Settings → Trusted Publisher → GitHub Actions
-#     Organization or user : BB0027
-#     Repository           : dsh-skillbox
-#     Workflow filename    : publish.yml
-#     Environment          : (leave empty)
-# After that, pushing a `v*` tag publishes automatically and attaches provenance.
+# One-time setup: npm → Package → Settings → Trusted Publisher → GitHub Actions
+#   organization/user: BB0027   repository: dsh-skillbox   workflow: publish.yml   environment: (empty)
 # See docs/PUBLISHING.md.
-#
-# Before that registration exists the job fails safely: npm rejects the OIDC token
-# exchange, so nothing is published. Re-runs are harmless.
-#
-# Note: no `registry-url` on setup-node and no NODE_AUTH_TOKEN anywhere on purpose —
-# publishing must go through OIDC, and `publishConfig.registry` already pins the
-# registry in package.json.
 
 name: publish
 
@@ -26,7 +13,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required: lets this job request the OIDC token npm verifies
+  id-token: write
 
 concurrency:
   group: publish-${{ github.ref }}
@@ -66,7 +53,7 @@ jobs:
             echo "::error::a token is configured; remove it so publishing uses Trusted Publishing (OIDC)"
             exit 1
           fi
-          echo "no token configured — publishing will use OIDC"
+          echo "no token configured"
 
       - name: Show OIDC environment
         run: |
@@ -74,8 +61,16 @@ jobs:
           echo "GITHUB_WORKFLOW_REF=${GITHUB_WORKFLOW_REF:-unset}"
           if [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then echo "OIDC_REQUEST_URL=present"; else echo "OIDC_REQUEST_URL=ABSENT"; fi
           if [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then echo "OIDC_REQUEST_TOKEN=present"; else echo "OIDC_REQUEST_TOKEN=ABSENT"; fi
-          echo "--- auth-related npm config ---"
-          npm config list | grep -i -E 'authToken|registry|_auth|provenance' || true
-          echo "provenance="
+          echo "provenance=$(npm config get provenance)"
+          echo "registry=$(npm config get registry)"
+
       - name: Publish
         run: npm publish --access public --provenance
+
+      - name: npm debug log on failure
+        if: failure()
+        run: |
+          f="$(ls -t "$HOME"/.npm/_logs/*debug-0.log 2>/dev/null | head -1)"
+          if [ -z "$f" ]; then echo "no debug log found"; exit 0; fi
+          echo "--- log: $f ---"
+          grep -i -E 'oidc|provenance|auth|token|trusted' "$f" | tail -50
