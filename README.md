@@ -13,7 +13,7 @@ Four tabs inside one top-level **Settings → Skills** page (`settings.section`)
 | **Installed** | Every resolved skill with its source (`bundled` / `user-dsh` / `user-agents` / `project-dsh` / `project-agents` / `runtime` / `custom`), invocation policy, `SKILL.md` path, same-name-conflict hint — plus **where it came from**, when it was installed/updated, whether it was **edited locally**, and whether **upstream has moved on**. Grouped by origin repository. |
 | **Discover** | Search skills.sh (installs, owner filter), preview a skill's `SKILL.md` with its Snyk / Socket verdicts, and install it into the DSH root in one click. Low-trust sources need an explicit confirmation. |
 | **Quarantine** | Everything this console moved out of discovery, with the reason (uninstalled by hand / pre-upgrade backup) and one-click restore, per item or all at once. |
-| **Health** | Environment self-check: is the `skills` CLI present, which version, does it still carry the `dsh` agent patch, and where the CLI lock and this plugin's state file live. |
+| **Health** | **Skill health**: scans the global roots for skills DSH silently refuses to load and says why, with a suggestion for each — plus an environment self-check (is the `skills` CLI present, which version, does it still carry the `dsh` agent patch, where the lock and state files live). |
 
 Plus: search across name / description / when-to-use, filter by source, filter to locally-edited skills, a stats line (total / uninstallable / plugin-provided / edited / upgradable / quarantined), and an **upgrade preview** that lists what would upgrade and what would be skipped before anything moves.
 
@@ -24,6 +24,16 @@ Plus: search across name / description / when-to-use, filter by source, filter t
 - **Installs only ever target the DSH root** (`skills add … -a dsh --copy`), never another agent's directory.
 - **An upgrade either lands or rolls back.** The current version goes to quarantine first; if the install fails, it is moved back.
 - **Local edits are protected.** A skill whose files no longer match the baseline recorded at install time is skipped, unless you explicitly tick *force overwrite*.
+
+## Skill health, and the one thing that acts on its own
+
+DSH silently ignores a `SKILL.md` it cannot accept: no error, no listing, no trace. The Health tab reads the global roots itself (`user-dsh`, `user-agents`, including flat `<name>.md` skills) and reports every file DSH will not load — missing frontmatter, missing `name`/`description`, a non-kebab-case `name`, a retired invocation key (`modelInvocable` / `userInvocable` / `disableModelInvocation`), unparsable frontmatter — each with the reason and a suggestion. The CLI's own listing cannot do this: measured, it reports a missing description but lists a skill with a legacy key as if it were fine.
+
+**Auto-quarantine** is the only thing this plugin does without being asked, and it is off by default. Turning it on requires one **rehearsal** first: the tab lists exactly what would move and touches nothing. After that, entering the page moves those files into the same reversible quarantine a manual uninstall uses, and reports what it moved. A skill you restore while the automation is on is not moved again during that run; toggling the automation or restarting DSH resets that. Findings are never rewritten and never deleted — only moved, and always restorable from the Quarantine tab.
+
+Both the scan and the automation are limited to the global roots: project-level skills are never scanned and never moved.
+
+The page itself is built from DSH's shared client controls (`@deepseek-ai/dsh-client-ui-primitives`) — the same primitives the plugin manager page uses — and degrades to plain elements if a client cannot see that module.
 
 ## Requirements
 

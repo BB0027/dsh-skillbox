@@ -117,4 +117,21 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 
 - Client-half only: refresh the page. No Host restart is needed for this release.
 
+## [0.4.0] — 2026-10-04
+
+### Added
+
+- **Health tab.** DSH silently ignores a `SKILL.md` it cannot accept, so a broken skill is not disabled — it is invisible, and nothing reports an error. The console now scans the two global roots itself (`user-dsh` and `user-agents`, including flat `<name>.md` skills) and lists everything DSH will not load, with a reason and a suggestion each: missing frontmatter, missing `name` or `description`, a `name` that is not kebab-case, a retired invocation key (`modelInvocable` / `userInvocable` / `disableModelInvocation`), frontmatter that cannot be parsed, an unreadable file. `.system` is skipped, exactly as the provider does. The CLI's own listing is not used for this: measured, it reports a missing description but lists a skill with a legacy key as if it were fine.
+- **Auto-quarantine**, off by default. Switching it on requires one **rehearsal** first — the page lists exactly what would move and touches nothing — and each pass reports what it moved. Findings go through the same reversible quarantine a manual uninstall uses, so they stay restorable from the Quarantine tab. No file is ever deleted and no `SKILL.md` is ever edited.
+- **Restore wins.** A skill you restore while the automation is on is not moved again during that run (the pass marks it `restored by you`); toggling the automation either way, or restarting DSH, resets that.
+- **The page now uses DSH's shared client controls** (`@deepseek-ai/dsh-client-ui-primitives`) — `Pill` for view switching and filters, `Button` for actions, `Tag` for badges, `Input` for search, `Switch` for the automation toggle, `StateDot` for row state — the same primitives the plugin manager page is built from, rather than hand-rolled markup. A third-party client may not see that module in the browser table, so every control degrades to the previous plain element; both paths are tested.
+- `npm test` runs four dependency-free suites: `test/health.mjs`, `test/flows.mjs`, `test/host-health.mjs` and `test/client-smoke.mjs` (the last renders the client in Node with a stub React and a stub cordis context, covering the shared-control and fallback paths plus the health tab).
+
+### Notes
+
+- Health scanning and auto-quarantine are limited to the global roots. Project-level skills are never scanned and never moved.
+- Applying this version needs one restart of the Host process; the Client half only needs a page refresh.
+- Still true, unchanged: no file is ever deleted, and no `SKILL.md` is ever edited.
+
+
 
