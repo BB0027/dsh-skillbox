@@ -28,6 +28,14 @@
     "skill-manager",
     "settings"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BB0027/dsh-skillbox.git"
+  },
+  "homepage": "https://github.com/BB0027/dsh-skillbox#readme",
+  "bugs": {
+    "url": "https://github.com/BB0027/dsh-skillbox/issues"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
