@@ -102,3 +102,19 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 - Applying this version needs one restart of the Host process; the Client half only needs a page refresh.
 - Still true, unchanged: no file is ever deleted, and no `SKILL.md` is ever edited.
 
+## [0.3.1] — 2026-10-04
+
+### Fixed
+
+- **Discover gave no feedback after installing.** The card that was clicked stayed unchanged and the page jumped to another tab, so a successful install looked like nothing had happened. The card now shows *installing* while the CLI works, flips to **Installed** in place when it lands, and the catalog refreshes immediately and again once the provider watcher has settled — without switching tabs.
+- **Search results did not say what was already installed.** A result whose skill is already present now carries an **Installed** tag, shows an **Update available** tag when upstream has moved on, and offers **Upgrade** instead of a second install — pressing install on a locally edited skill would have overwritten it.
+
+### Added
+
+- `test/client-smoke.mjs`: renders the client half in Node with a stub React and a stub cordis context, so the discover card's installed/upgrade states are covered without a browser (`node test/client-smoke.mjs`).
+
+### Notes
+
+- Client-half only: refresh the page. No Host restart is needed for this release.
+
+
