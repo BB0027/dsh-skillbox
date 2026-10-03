@@ -1,7 +1,7 @@
 {
   "name": "dsh-skillbox",
-  "version": "0.2.2",
-  "description": "Skill shelf for DeepSeek Harness (dsh): list every skill DSH resolves and uninstall or restore any of them from Settings — a reversible move into quarantine that never deletes a file. · DSH 技能控制台：在设置里总览 DSH 解析到的全部技能，可卸载/恢复；卸载是移入隔离区，绝不删除文件。",
+  "version": "0.3.0",
+  "description": "Skill shelf for DeepSeek Harness (dsh): list every skill DSH resolves, discover and install skills from skills.sh, upgrade them safely (previous version quarantined, never deleted), and uninstall or restore any of them from Settings. · DSH 技能控制台：总览 DSH 解析到的全部技能，可从 skills.sh 搜索安装、安全升级（旧版进隔离区、绝不删除）、卸载/恢复。",
   "type": "module",
   "license": "MIT",
   "main": "lib/host.js",
@@ -11,13 +11,13 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "lib/host.js",
-    "lib/client.js",
+    "lib/",
     "cordis.patch.yml",
     "README.md",
     "README.zh.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "docs/"
   ],
   "keywords": [
     "dsh",

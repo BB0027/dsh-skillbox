@@ -72,3 +72,33 @@ Direction change: skill management is now **uninstall**, not a read-boundary dis
 ### Notes
 
 - No functional change to the plugin: this release exercises the new release pipeline end to end.
+
+## [0.3.0] — 2026-10-04
+
+The console stops being read-only about the skill ecosystem: it can now find skills, install them, and upgrade them — safely, through the official `skills` CLI, while keeping every v0.2.x guarantee.
+
+### Added
+
+- **Tabs.** The page is now Installed / Discover / Quarantine / Health.
+- **Installed, enriched.** Each row shows where the skill came from (`source`, upstream `skillPath`), when it was installed and updated, whether it has been **edited locally** since install, and whether **upstream has moved on**. Skills are grouped by their origin repository; locally written skills get their own group.
+- **Discover.** Search skills.sh from the page (installs, source, owner filter), preview a skill's `SKILL.md` together with its Snyk / Socket verdicts, and install it into the DSH root in one click. Sources with fewer than 100 installs from an unrecognised owner require an explicit confirmation.
+- **Check for updates.** Update availability compares the upstream git tree SHA of the skill folder against the reference recorded when this plugin installed or upgraded it — no clone, no install, nothing touched, and independent of line endings. The CLI lock's own hashes are unusable for this on Windows: the CLI writes CRLF-converted bytes and stores a payload hash, so neither its 64-hex value nor a raw upstream hash matches what is on disk (measured; `docs/SPEC-v0.3.0.md` F3/F4).
+- **Upgrade, single / preview / all.** A dry-run preview lists what would upgrade and what would be skipped; the previous version is moved into quarantine (`reason: upgrade-backup`) before the new one is fetched, and restored automatically if the install fails.
+- **Local-edit protection.** An upgrade of a skill whose files no longer match the baseline recorded at install time is skipped unless the user explicitly ticks "force overwrite".
+- **Environment self-check (Health tab).** Reports whether the `skills` CLI is present, its version, whether it still carries the local `dsh` agent patch, and where the CLI lock and this plugin's state file live.
+- **Own state file**: `<profile>/dsh-skillbox-state.json`, holding install baselines, the auto-quarantine switch (0.4.0) and the quarantine ledger. The v0.2.x `removedSkills` config entry is migrated on first read and never written again — config writes re-apply the plugin, which is the wrong thing to do from a request handler.
+
+### Changed
+
+- Quarantine records now carry a **reason** (`manual` / `upgrade-backup` / `auto` / `legacy`) and a timestamp, shown in the UI.
+- A skill that leaves the catalog also drops its baseline hash, so a later reinstall cannot be misread as "locally modified".
+- Every install goes through `skills add … -g -y -a dsh --copy --full-depth --json`. `--full-depth` is not optional: without it the CLI's repository discovery stops early and returns a partial skill list (measured 2/5 successes against 5/5 with the flag).
+
+### Notes
+
+- Requires the `skills` CLI (npm `skills`) with the `dsh` agent entry; when it is missing or unpatched the Discover tab is disabled and the Health tab says why. See `docs/SPEC-v0.3.0.md` and the companion `find-skills` skill for the patch script.
+- `skills check` / `skills update` are deliberately **not** used. Measured: with an update pending, `skills check -g` performs the install itself and overwrites a locally edited skill — it deleted a marker file placed in the skill directory. Update detection and upgrades are therefore driven here instead.
+- A GitHub token is optional but recommended: update checks use the GitHub API, whose anonymous quota is 60/hour and is also consumed by `skills add` itself. When the quota is exhausted the plugin degrades to "update status unknown" with the reason shown — it never guesses and never touches files. Set `GITHUB_TOKEN` (or `GH_TOKEN`) to raise the limit.
+- Applying this version needs one restart of the Host process; the Client half only needs a page refresh.
+- Still true, unchanged: no file is ever deleted, and no `SKILL.md` is ever edited.
+
