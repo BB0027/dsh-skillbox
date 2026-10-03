@@ -147,8 +147,8 @@ console.log('== where the console lives ==');
   const settings = bySlot('settings.section');
   check('page is registered in the sidebar panel slot', panel?.options?.key === 'skill-console' && typeof panel?.component === 'function', JSON.stringify(panel?.options));
   check(
-    'sidebar entry matches the plugins/automation panels',
-    entry?.options?.id === 'skill-console' && entry?.options?.order === 20 && typeof entry?.component === 'function',
+    'sidebar entry sits between Plugins (0) and Automation (10)',
+    entry?.options?.id === 'skill-console' && entry?.options?.order === 5 && typeof entry?.component === 'function',
     JSON.stringify(entry?.options),
   );
   check('sidebar label follows the locale', entry?.options?.label?.() === '技能', String(entry?.options?.label?.()));

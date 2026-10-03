@@ -144,5 +144,13 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 
 - Client-half only: refresh the page. No Host restart is needed for this release.
 
+## [0.4.2] — 2026-10-04
+
+### Changed
+
+- **The page scrolls, and the sidebar entry now sits between Plugins and Automation** (`order: 5`, previously 20). Without its own scroll host the page could not be scrolled at all inside the panel.
+- **The layout follows the Plugins panel page**, read from that page's own stylesheet rather than guessed: a full-height scroll host with `clamp(24px, 4vw, 48px)` side padding and a 960px content column, a 20px/500 title with a 13px intro line, the tab pills as a plain row, group headings that carry their counts, 2px-spaced rows with a 36px icon tile, and 13px/20px descriptions.
+- Tab actions moved out of the list bodies into the header on the right, where the Plugins page keeps its actions: upgrade preview / upgrade all on Installed, restore all on Quarantine, rehearse / rescan on Health.
+
 
 
