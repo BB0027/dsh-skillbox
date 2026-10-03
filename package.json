@@ -1,6 +1,6 @@
 {
   "name": "dsh-skillbox",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Skill shelf for DeepSeek Harness (dsh): a sidebar panel next to Plugins and Automation that lists every skill DSH resolves, discovers and installs skills from skills.sh, upgrades them safely (previous version quarantined, never deleted), uninstalls or restores any of them, and reports skills DSH cannot load. · DSH 技能控制台：与「插件 / 自动化任务」同级的侧栏面板，总览 DSH 解析到的全部技能，可从 skills.sh 搜索安装、安全升级（旧版进隔离区、绝不删除）、卸载/恢复，并报告 DSH 读不了的技能。",
   "type": "module",
   "license": "MIT",

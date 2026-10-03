@@ -175,3 +175,9 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 
 
 
+
+## [0.5.2] — 2026-10-04
+
+### Fixed
+
+- The header button no longer renders one character per line. Controls come from the shared `Button`, which does not carry this page's own `dsc-btn { white-space: nowrap }` rule, and the flex row was free to squeeze it; the toolbar (and its children) now refuse to shrink. Same guard added to the tab pill row.

@@ -179,6 +179,18 @@ console.log('\n== the basic settings page ==');
   check('export / import controls exist', labels.includes('导出 JSON') && labels.includes('导入上方 JSON'), JSON.stringify(labels));
   check('node + CLI check is shown', text.includes('Node.js') && text.includes('skills CLI') && text.includes('1.7.0'), text.slice(0, 140));
   check('settings page points at the panel', text.includes('侧栏'));
+  // Regression: a header button must not be squeezable. It rendered one character per
+  // line once controls started coming from the shared Button, which does not carry the
+  // page's own dsc-btn nowrap rule.
+  const style = nodes(tree, (n) => n.type === 'style')
+    .map((n) => labelOf(n))
+    .join('');
+  check('toolbar controls cannot be squeezed', style.includes('.dsc-toolbar > * { flex: none; white-space: nowrap; }'));
+  check(
+    'header columns cannot squeeze each other',
+    style.includes('.dsc-toolbar { display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; flex: none; }') &&
+      style.includes('.dsc-pageHeadMain { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }'),
+  );
 }
 
 // ---------------------------------------------------------------- fallback path
