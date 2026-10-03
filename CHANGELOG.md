@@ -152,5 +152,20 @@ The console stops being read-only about the skill ecosystem: it can now find ski
 - **The layout follows the Plugins panel page**, read from that page's own stylesheet rather than guessed: a full-height scroll host with `clamp(24px, 4vw, 48px)` side padding and a 960px content column, a 20px/500 title with a 13px intro line, the tab pills as a plain row, group headings that carry their counts, 2px-spaced rows with a 36px icon tile, and 13px/20px descriptions.
 - Tab actions moved out of the list bodies into the header on the right, where the Plugins page keeps its actions: upgrade preview / upgrade all on Installed, restore all on Quarantine, rehearse / rescan on Health.
 
+## [0.5.0] — 2026-10-04
+
+### Added
+
+- **The Settings entry is now a small, self-contained settings page** with its own section id (`skill-settings`), while the full console stays in the sidebar panel next to Plugins and Automation:
+  - **Language** — follow DSH / 中文 / English, stored in the plugin state and applied to every page of the plugin.
+  - **Import / export** — export the ledger (install baselines, quarantine, switches, preferences) to a JSON file, or paste one back to replace it. Records only: no skill file is moved, edited or deleted by an import.
+  - **Node.js check** — the runtime the plugin runs in, the `node` found on PATH, the `skills` CLI version, whether the local `dsh` agent patch is still in place, and a re-check button.
+- The catalog payload now carries `node` and `ui`; the Host gained `set-ui`, `export-state` and `import-state` actions.
+
+### Changed
+
+- **Chinese first.** An unknown or absent DSH locale now falls back to Chinese rather than English, matching how this console is deployed; the language setting still allows an explicit override.
+
+
 
 

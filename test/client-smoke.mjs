@@ -152,7 +152,8 @@ console.log('== where the console lives ==');
     JSON.stringify(entry?.options),
   );
   check('sidebar label follows the locale', entry?.options?.label?.() === '技能', String(entry?.options?.label?.()));
-  check('settings entry kept as a second way in', settings?.options?.id === 'skill-console');
+  check('settings entry is its own page id', settings?.options?.id === 'skill-settings', JSON.stringify(settings?.options));
+  check('settings page is not the console', settings?.component !== panel?.component);
   const icon = entry.component();
   check('the sidebar icon comes from the shared icon set', icon?.type === ui.IconSkillOutlineRegular, String(icon?.type));
   const fallbackIcon = (() => {
@@ -163,11 +164,28 @@ console.log('== where the console lives ==');
   check('the registered page component is the console', typeof component === 'function');
 }
 
+// ---------------------------------------------------------------- settings page
+console.log('\n== the basic settings page ==');
+{
+  const ui = makeUi();
+  const { bySlot } = renderWith({ tab: 'installed', catalog, ui });
+  const settings = bySlot('settings.section');
+  const tree = settings.component();
+  const text = labelOf(tree);
+  const labels = nodes(tree, (n) => n.type === ui.Button).map(labelOf);
+  const pills = nodes(tree, (n) => n.type === ui.Pill).map(labelOf);
+  check('settings page renders its own title', text.includes('技能插件设置'), text.slice(0, 80));
+  check('language choices are pills', pills.includes('中文') && pills.includes('English') && pills.includes('跟随 DSH'), JSON.stringify(pills));
+  check('export / import controls exist', labels.includes('导出 JSON') && labels.includes('导入上方 JSON'), JSON.stringify(labels));
+  check('node + CLI check is shown', text.includes('Node.js') && text.includes('skills CLI') && text.includes('1.7.0'), text.slice(0, 140));
+  check('settings page points at the panel', text.includes('侧栏'));
+}
+
 // ---------------------------------------------------------------- fallback path
 console.log('\n== without the shared controls (fallback markup) ==');
 {
   const { component, bySlot } = renderWith({ tab: 'installed', catalog });
-  check('settings entry is registered too', bySlot('settings.section')?.options?.id === 'skill-console');
+  check('settings entry is registered too', bySlot('settings.section')?.options?.id === 'skill-settings');
   const tree = component({});
   const text = labelOf(tree);
   check('installed tab renders both skills', text.includes('find-skills') && text.includes('vercel-react-best-practices'));
