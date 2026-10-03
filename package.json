@@ -1,0 +1,56 @@
+{
+  "name": "dsh-skillbox",
+  "version": "0.2.0",
+  "description": "Skill console for DeepSeek Harness (dsh): browse every skill DSH resolves across all roots in Settings, and enable or disable any of them globally without touching a single skill file. · DSH 技能控制台：在设置里总览 DSH 解析到的全部技能，全局启用/禁用，不改动任何技能文件。",
+  "type": "module",
+  "license": "MIT",
+  "main": "lib/host.js",
+  "exports": {
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/host.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "dsh-plugin",
+    "skill",
+    "skills",
+    "skill-manager",
+    "settings"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  }
+}

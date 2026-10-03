@@ -1,0 +1,6 @@
+# dsh-skillbox bundle patch.
+# 与 package.json 的 dsh.bundle.patch 一致：把插件行插入所选 profile 的 cordis 配置，
+# 使 `dsh plugin add dsh-skillbox` 可一步安装。
+- insert:
+    - id: skill-console
+      name: dsh-skillbox
